@@ -13,6 +13,6 @@ Les arbres de décision fournissent également la base pour des méthodes d'ense
 Un script générant un jeu données a été mis en place.
 
 Inline-style: 
-![alt text](http://crsouza.com/2012/01/04/decision-trees-in-c/ "Exemple")
+![alt text](http://crsouza.com/wp-content/uploads/2012/01/image_thumb-25255B16-25255D.png "Exemple")
 
 
