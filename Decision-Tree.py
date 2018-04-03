@@ -5,17 +5,19 @@
 
 # ## Introduction
 
-# Les arbres de décision sont une méthode de **prédiction** puissante et extrêmement populaire.
+# Les arbres de décision sont une méthode utilisées en apprentissage automatique pour réaliser la **classification** et **prédiction** de nombreux phénomènes comme les événéments météorologique par exemple.  
 # 
-# Ils sont populaires parce que le **modèle final** est si facile à comprendre par les praticiens et les experts du domaine de l'apprentissage supervisé. L'arbre de décision final peut expliquer exactement pourquoi une **prédiction** spécifique a été faite, ce qui le rend très attrayant pour une utilisation opérationnelle.
+# Ils sont populaires parce que le **modèle final** est facile à comprendre par les praticiens et les experts du domaine de l'apprentissage supervisé. L'arbre de décision final peut expliquer exactement pourquoi une **prédiction** spécifique a été faite, ce qui le rend très attrayant pour une utilisation opérationnelle.
 # 
-# Les arbres de décision fournissent également la base pour des méthodes d'ensemble plus avancées telles que les **forêts aléatoires**(Random Forest).
+# Les arbres de décision fournissent également la base pour des méthodes d'ensemble plus avancées telles que les **forêts aléatoires** (Random Forest).
+# 
+# Le code est disponible [ici](https://github.com/mbenhamd/decision-tree-scratch).
 
 # ### Le but de ce mini-projet est de mettre en application les notions vues en cours :
 # 
 # 1. Comment calculer et évaluer les points de partage pour une donnée ?
-# 2. Comment organiser des divisions en une structure d'arbre de décision ?
-# 3. Comment appliquer l'algorithme de classification à un problème réel ?
+# 2. Comment organiser des divisions en une structure d'arbre de décision ainsi que la visualisation ?
+# 3. Comment appliquer l'algorithme de classification à un problème réel et aussi la prédiction  ?
 
 # ## Description
 
@@ -23,12 +25,12 @@
 # 
 # Une fois créé, un arbre peut être parcouru avec une nouvelle rangée de données suivant chaque branche avec les divisions jusqu'à ce qu'une **prédiction** finale soit faite.
 # 
-# La répartition avec le meilleur coût (coût le plus bas car nous minimisons les coûts) est sélectionnée. Ici, la fonction de minimisation sera l'**entropie**, c'est le **principe de minimisation**. Toutes les variables d'entrée et tous les points de partage possibles sont évalués et choisis de manière gourmande en fonction de la fonction de coût.
+# La répartition avec le meilleur coût (coût le plus bas car nous minimisons les coûts) est sélectionnée. Ici, la fonction de minimisation sera l'**entropie**, c'est le **principe de minimisation**. Toutes les variables d'entrée et tous les points de partage possibles sont évalués.
 # 
 
 # ## Jeu de données
 
-# L'ensemble de données correspond à des données météorologiques consiste à prédire si les données correpondent à une **classe** N comme négative ou P pour positive. Un exemple serait une utilisation agricole pour différents types de plantation que l'on peut posséder.
+# L'ensemble de données correspond à des données météorologiques consiste à prédire si les données correpondent à une **classe** C comme négative ou P pour positive. Un exemple serait une utilisation agricole pour différents types de plantation que l'on peut posséder par exemple.
 # 
 # L'ensemble de données contient 14 lignes avec 4 variables qualitatives. C'est un problème de classification avec deux classes (classification binaire).
 # 
@@ -41,10 +43,9 @@
 # 
 
 # Voici le contenu du jeu de données :
-# Puis que pour la phase d'**apprentissage**, l'arbre de décision prend des valeurs numérique, ici nous pratiquons une transformation des **labels**.
+# Pour la phase d'**apprentissage**, l'arbre de décision prend des valeurs numérique, ici nous pratiquons une transformation des **labels**.
 
 # In[1]:
-
 
 from IPython.core.interactiveshell import InteractiveShell
 from sklearn import preprocessing
@@ -84,7 +85,11 @@ fifthLabelEncoder.fit(df['C'].tolist())
 fifthColumn = fifthLabelEncoder.transform(df['C'].tolist())
 
 # Création de la table
-encodedData = dict( outlook = np.array(firstColumn), temperature = np.array(secondColumn), humidity = np.array(thirdColumn), windy = np.array(fourthColumn), C = np.array(fifthColumn))
+encodedData = dict( outlook = np.array(firstColumn), 
+                   temperature = np.array(secondColumn), 
+                   humidity = np.array(thirdColumn), 
+                   windy = np.array(fourthColumn), 
+                   C = np.array(fifthColumn))
 
 # Encodage sous forme de DF
 finalDF = pd.DataFrame.from_dict(encodedData)
@@ -107,8 +112,7 @@ finalDF.head(10)
 # 
 # Définissons la routine suivante :
 
-# In[9]:
-
+# In[2]:
 
 def entropie(s):
     resultat = 0.0
@@ -127,7 +131,6 @@ entropie(finalDF['C'])
 
 # In[3]:
 
-
 def gain(y, x):
 
     resultat = entropie(y)
@@ -136,14 +139,13 @@ def gain(y, x):
     valeur, compteur = np.unique(x, return_counts=True)
     frequences = compteur.astype('float')/len(x)
 
-    # Moyenne ponderé par l'entropie pour chaque valeur que la classe prend
+    # Moyenne ponderé par l'entropie 
     for p, v in zip(frequences, valeur):
         resultat -= p * entropie(y[x == v])
     return resultat
 
 
-# In[10]:
-
+# In[4]:
 
 gain(finalDF['C'],finalDF['outlook'])
 
@@ -154,27 +156,29 @@ gain(finalDF['C'],finalDF['outlook'])
 # # Exemple avec scikit-learn et la classe *DecisionTreeClassifier*
 # 
 # 
-# Par défaut, la fonction de mesure utilisé par sklearn est Gini alors nous changons cette valeur par l'entropie.
+# Par défaut, la fonction de mesure utilisé par **scikit-learn** est *Gini* alors nous changons cette valeur par *l'entropie*.
 # Pour commencer, nous allons générer les 4 matrices habituelles pour tester la méthode d'apprentissage automatique puis afficher le tableau entrainé et sa sortie correspondante.
 
-# In[12]:
-
+# In[5]:
 
 from sklearn.model_selection import train_test_split
 
 X = finalDF.drop('C', axis=1)
 y = finalDF['C']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y,train_size=0.5, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                    y,
+                                                    train_size=0.5,
+                                                    test_size=0.5,
+                                                    random_state=1)
 
 X_train.head(10)
 y_train.head(10)
 
 
-# On partage nos données ici, *y_train* correspond ici à l'objectif en sortie contenant la ligne et sa classe C d'appartenance puis *X_train* est le jeu d'entrainement qui servira de données entrant pour la phase d'apprentissage.
+# On partage nos données ici, *y_train* correspondant ici à l'objectif en sortie contenant la ligne et sa classe C d'appartenance puis *X_train* est le jeu d'entrainement qui servira de données entrant pour la phase d'apprentissage.
 
-# In[13]:
-
+# In[6]:
 
 from sklearn import tree
 from sklearn.metrics import accuracy_score
@@ -210,11 +214,10 @@ graph.write_png("Decision Tree For Weather.png")
 # Les options suivantes ont été activés afin d'obtenir des informations pertinantes pour l'interprétation:
 # Les noms de classes correspondentes bien au noms de colonnes afin de faciliter la lecture.
 # La représentation de l'échantillon pour chaque noeud a été mis sous forme de pourcentage.
-# Pour plus de clarté, l'arbre de décision est enregistré sous un format image *png*
+# Pour plus de clarté, l'arbre de décision est enregistré sous un format image *png*.
 # Ici l'interprétation est libre suivant les données que l'utilisation entre aux début du notebook.
 
-# In[14]:
-
+# In[7]:
 
 from sklearn.metrics import accuracy_score
 
@@ -224,8 +227,7 @@ y_predict = clf.predict(X_test)
 accuracy_score(y_test, y_predict)
 
 
-# In[15]:
-
+# In[8]:
 
 from sklearn.metrics import confusion_matrix
 
@@ -246,4 +248,74 @@ pd.DataFrame(
 # 
 # Le but de ce notebook était de voir les plusieurs notions autour des arbres de décision comme le calcul de l'entropie, le principe de gain puis l'utilisation d'une librairie (**Scikit-Learn**) pour faire de la classification et de la prédiction.
 # 
+# 
+
+# # Annexe
+# 
+# Le code générant des données aléatoire pour réaliser l'apprentissage :
+
+# file = read.csv("test_data.csv")
+# s = as.matrix.data.frame(file)
+# 
+# ### Names of columns
+# namescol = c("outlook","temperature","humidity","windy","C")
+# 
+# 
+# 
+# ### All possible values for each columns
+# outlook_possible_values = c("sunny","overcast","rain")
+# temperature_possible_values = c("hot","mid","cold")
+# humidity_possible_values = c("high","normal","low")
+# windy_possible_values = c("true","false")
+# C_possible_values = c("N","P")
+# 
+# ###   Matrix representing all possible values
+# matrix_all_values = cbind(outlook_possible_values,
+#                           temperature_possible_values,
+#                           humidity_possible_values,
+#                           windy_possible_values,
+#                           C_possible_values)
+# 
+# 
+# ### Vector of possible indexes for generating a line
+# rand_values_for_all = c(floor(runif(1, 1,4)),
+#                         floor(runif(1, 1,4)),
+#                         floor(runif(1, 1,4)),
+#                         floor(runif(1, 1,3)),
+#                         floor(runif(1, 1,3)))
+# 
+# ### Line computed
+# ligne = cbind(outlook_possible_values[rand_values_for_all[1]],
+#               temperature_possible_values[rand_values_for_all[2]],
+#               humidity_possible_values[rand_values_for_all[3]],
+#               windy_possible_values[rand_values_for_all[4]],
+#               C_possible_values[rand_values_for_all[5]])
+# 
+# 
+# ### Function that will generate a data dataframe of n random lines
+# generate_n_line = function(nline = 100){
+#     final = vector()
+#     for( i in seq(1:nline)){
+#     rand_values_for_all = c(floor(runif(1, 1,4)),
+#                             floor(runif(1, 1,4)),
+#                             floor(runif(1, 1,4)),
+#                             floor(runif(1, 1,3)),
+#                             floor(runif(1, 1,3)))    
+#     ligne = cbind(outlook_possible_values[rand_values_for_all[1]],
+#                   temperature_possible_values[rand_values_for_all[2]],
+#                   humidity_possible_values[rand_values_for_all[3]],
+#                   windy_possible_values[rand_values_for_all[4]],
+#                   C_possible_values[rand_values_for_all[5]])  
+#     final=rbind(final,ligne)
+#     }
+#     colnames(final) = namescol
+#     return(final)
+# }
+# 
+# ### Test
+# test = generate_n_line(10000)
+# test
+# 
+# ### Write into a csv
+# write.csv(test,"random_data.csv",row.names=FALSE)
 # 
