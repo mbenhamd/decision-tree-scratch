@@ -1,6 +1,6 @@
 # Arbre de décision
 *Ce dépôt a été crée dans le cadre de réaliser une application de cours :*
-Lien du cours : [ici] (http://www.math-info.univ-paris5.fr/~bouzy/Doc/AA1/InductionDecisionTree.pdf)
+Lien du cours : [ici](http://www.math-info.univ-paris5.fr/~bouzy/Doc/AA1/InductionDecisionTree.pdf)
 
 ## Introduction
 
