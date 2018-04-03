@@ -10,4 +10,9 @@ Ils sont populaires parce que le **modèle final** est facile à comprendre par 
 
 Les arbres de décision fournissent également la base pour des méthodes d'ensemble plus avancées telles que les **forêts aléatoires** (Random Forest).
 
+Un script générant un jeu données a été mis en place.
+
+Inline-style: 
+![alt text](http://crsouza.com/2012/01/04/decision-trees-in-c/ "Exemple")
+
 
